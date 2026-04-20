@@ -1,0 +1,14 @@
+{
+  "name": "vibe-test",
+  "owner": {
+    "name": "626Labs LLC"
+  },
+  "description": "Vibe Test — canary channel. Tracks the main branch of the solo repo. For stable releases pinned to tagged versions, install via the aggregated 626Labs marketplace at github.com/estevanhernandez-stack-ed/vibe-plugins.",
+  "plugins": [
+    {
+      "name": "vibe-test",
+      "description": "Test analyzer and generator for vibe-coded apps. Classifies by app type and maturity tier, measures coverage honestly (no cherry-picked denominators), generates tests proportional to deployment risk — and catches the broken harnesses every other test tool assumes away.",
+      "source": "./packages/vibe-test"
+    }
+  ]
+}
