@@ -1,14 +1,14 @@
 {
   "name": "@esthernandez/vibe-test",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Test analyzer and generator for vibe-coded apps. Classification-driven. Tiered by deployment context. Catches the broken harnesses every other test tool assumes away.",
   "author": "626Labs LLC",
   "license": "MIT",
-  "homepage": "https://github.com/estevanhernandez-stack-ed/vibe-plugins#readme",
-  "bugs": "https://github.com/estevanhernandez-stack-ed/vibe-plugins/issues",
+  "homepage": "https://github.com/estevanhernandez-stack-ed/vibe-test#readme",
+  "bugs": "https://github.com/estevanhernandez-stack-ed/vibe-test/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/estevanhernandez-stack-ed/vibe-plugins.git",
+    "url": "https://github.com/estevanhernandez-stack-ed/vibe-test.git",
     "directory": "packages/vibe-test"
   },
   "type": "module",

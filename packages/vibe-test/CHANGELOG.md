@@ -4,6 +4,23 @@ All notable changes to `@esthernandez/vibe-test` will be documented in this file
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.4] — 2026-04-19 · First release from solo repo
+
+No functional code changes — this release marks the migration from the `vibe-plugins` monorepo into the dedicated solo repo at `github.com/estevanhernandez-stack-ed/vibe-test`.
+
+### Changed
+
+- `repository.url` now points at the solo repo (`vibe-test`) instead of the monorepo (`vibe-plugins`)
+- `homepage` and `bugs` URLs updated to the new solo repo
+- Git history preserved via `git filter-repo` — all 19 pre-existing commits and the four `vibe-test-v0.2.0`–`v0.2.3` tags are intact on the new remote
+
+### Channel model
+
+Vibe Test now ships on two channels:
+
+- **Canary** tracks `main` on the solo repo at `github.com/estevanhernandez-stack-ed/vibe-test` — paste that URL in Claude Code's Add Marketplace dialog to see edge releases the moment they land
+- **Stable** installs via the aggregated 626Labs marketplace at `github.com/estevanhernandez-stack-ed/vibe-plugins`, which pins this plugin to a specific tag. Promotion happens by bumping the `ref` field in that marketplace's `marketplace.json`
+
 ## [0.2.0] — 2026-04-18 · First public release
 
 First shippable release of Vibe Test. Twelve `/checklist` items completed end-to-end, dogfooded against the real WeSeeYouAtTheMovies codebase.

@@ -1,14 +1,14 @@
 {
   "name": "@esthernandez/vibe-test-cli",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "CLI wrapper for @esthernandez/vibe-test — headless audit/coverage/gate/posture for CI pipelines.",
   "author": "626Labs LLC",
   "license": "MIT",
-  "homepage": "https://github.com/estevanhernandez-stack-ed/vibe-plugins#readme",
-  "bugs": "https://github.com/estevanhernandez-stack-ed/vibe-plugins/issues",
+  "homepage": "https://github.com/estevanhernandez-stack-ed/vibe-test#readme",
+  "bugs": "https://github.com/estevanhernandez-stack-ed/vibe-test/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/estevanhernandez-stack-ed/vibe-plugins.git",
+    "url": "https://github.com/estevanhernandez-stack-ed/vibe-test.git",
     "directory": "packages/vibe-test-cli"
   },
   "bin": {
