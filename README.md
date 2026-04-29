@@ -1,3 +1,7 @@
+<p align="center">
+  <img alt="Vibe Test — honest coverage for vibe-coded apps" src="https://626labs.dev/assets/brand/plugins/vibe-test-banner-1500x500.png" />
+</p>
+
 # Vibe Test
 
 > *"Catches the broken harnesses every other test tool assumes away."*
