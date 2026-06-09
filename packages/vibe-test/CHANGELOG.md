@@ -4,6 +4,25 @@ All notable changes to `@esthernandez/vibe-test` will be documented in this file
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.5] — 2026-06-09 · Evolve-driven structural fixes + version-field correction
+
+Applies all five proposals from the 2026-06-09 `/vibe-test:evolve` run (paper trail in `applied-changes.md`) and rolls the plugin manifest version forward, which had slipped behind the `vibe-test-v0.2.4` tag.
+
+### Added
+
+- **vitals Check #8 — release consistency (tag vs manifest)** — compares `.claude-plugin/plugin.json` `version` against the highest `vibe-test-v*` tag. Pass when equal, warn when the manifest is ahead (release staged, not yet tagged), fail when a tag shipped ahead of the manifest. Catches exactly the slip this release corrects.
+
+### Changed
+
+- **`/evolve` solo-repo identity gate** — the blocking prerequisite now verifies `remote.origin.url` resolves to `estevanhernandez-stack-ed/vibe-test` (and that the evolve SKILL exists under the resolved root) before any write, instead of gating on the retired Vibe Plugins monorepo. Protects the `proposed-changes.md` paper trail from forking into lookalike scratch/archive directories.
+- **`/evolve` input hygiene** — synthetic smoke/CI self-test entries are excluded from weighting and baselines, and an empty 30-day window with older signal triggers a defined widen-to-all-time (weights flagged stale) or abort prompt instead of improvisation.
+
+### Fixed
+
+- **Manifest version corrected** — `.claude-plugin/plugin.json` read `0.2.3` while the `vibe-test-v0.2.4` tag had already shipped; rolled forward to `0.2.5` (skipping the mislabeled `0.2.4`). Banners, session-log entries, and Pattern #15 resolutions now report the right number.
+- **Friction-trigger drift** — the `fix`, `gate`, `posture`, and `coverage` Friction Logging tables declared friction types absent from the `FrictionType` union and `friction-triggers.md`; all four are realigned to the canonical map so `/evolve` can weight the signal they emit. Two body-prose emissions of the same orphan types (`gate` default-tier, `fix` deferred-diagnosis) were removed.
+- **Stale vitals runtime paths** — the vitals command-files row pointed at `.claude-plugin/commands/*.md`; corrected to `commands/*.md`. Sibling stale-path mentions in `guide` (framework.md location) and the framework-doc references in `evolve`/`vitals`/`guide` were repointed at canonical homes.
+
 ## [0.2.4] — 2026-04-19 · First release from solo repo
 
 No functional code changes — this release marks the migration from the `vibe-plugins` monorepo into the dedicated solo repo at `github.com/estevanhernandez-stack-ed/vibe-test`.
