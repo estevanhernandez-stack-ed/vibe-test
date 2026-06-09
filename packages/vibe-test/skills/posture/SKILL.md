@@ -225,8 +225,8 @@ JSON output is **level-invariant**.
 
 | Trigger | friction_type | confidence |
 |---------|---------------|------------|
-| Builder runs posture 3+ times in a session without acting on any suggestion | `suggestion_ignored` | `low` |
-| State read fails (corrupted JSON in any state file) | `state_corruption` | `high` |
+| Posture takes longer than 3s to render (budget breach; capture scan duration in `symptom`) | `runtime_hook_failure` | `medium` |
+| Builder asks posture to *do* something (run an audit, generate a test) rather than just read | `sequence_revised` | `low` |
 
 Posture is a low-friction SKILL. Most signals come from `/audit`, `/generate`, `/fix`, `/gate`. When in doubt, don't log.
 

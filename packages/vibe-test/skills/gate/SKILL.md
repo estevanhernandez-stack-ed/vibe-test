@@ -80,7 +80,7 @@ Surface at most ONE anchored complement announcement per invocation. In CI mode,
 2. If absent or stale:
    - Invoke `scan(repoRoot)` → Inventory.
    - Invoke `classifyAppType({detection, routes, models, componentCount})` + `classifyModifiers(...)`.
-   - Tier — use `--tier` flag if passed; otherwise default to a conservative `public-facing` with a warning in the banner. Log `friction_type: "default_tier_applied"` at confidence `low`.
+   - Tier — use `--tier` flag if passed; otherwise default to a conservative `public-facing` with a warning in the banner. (Applying a default tier is not friction; the map has no row for it, so don't log.)
    - Record `audit_state_source: 'fresh-scan'`.
 
 Attach the resulting classification to the ReportObject.
@@ -197,10 +197,10 @@ JSON output is **level-invariant**.
 
 | Trigger | friction_type | confidence |
 |---------|---------------|------------|
-| Default tier applied (no audit-state, no --tier) | `default_tier_applied` | `low` |
-| Coverage run crashed (tool error → exit 2) | `harness_break` | `high` |
-| Builder overrides verdict via `--force` (not v0.2; reserved for v0.3) | `verdict_overridden` | `medium` |
-| Builder declines a Pattern #13 complement offer | `complement_rejected` | `high` |
+| Gate exits 1 (threshold breach) and the builder asserts the threshold is wrong for their context (capture threshold + score + claimed tier in `symptom`) | `tier_threshold_dispute` | `medium` |
+| Gate exits 2 (tool error) repeatedly on the same repo | `harness_break` | `high` |
+| Builder declines a Pattern #13 complement offer (set `complement_involved`) | `complement_rejected` | `medium` |
+| CI annotation format is misread by the build system (stdout contract mismatch) | `runtime_hook_failure` | `medium` |
 
 When in doubt, don't log.
 

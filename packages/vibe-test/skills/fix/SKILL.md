@@ -175,7 +175,7 @@ Route per confidence:
 2. If the discipline skill is absent → ask the builder for context:
    > *"The failure in `{test_file}` has more than one plausible cause — `{hypotheses}`. Which one matches your recent changes? I'll tailor the diagnosis from there."*
 
-Log `friction_type: "complex_diagnosis_deferred"` at confidence `medium` whenever a failure takes the defer path — the aggregate signal tells /evolve where fix's automatic diagnosis is weakest.
+Deferring to `superpowers:systematic-debugging` is intended composition, not friction; don't log it. Friction here is only a builder *declining* the complement (`complement_rejected`, per the Friction Logging table).
 
 ### Step 7 — Rollback hook (F1 — auto-generated test broke CI)
 
@@ -258,11 +258,10 @@ JSON output is **level-invariant**.
 
 | Trigger | friction_type | confidence |
 |---------|---------------|------------|
-| Rollback hook fires (auto-written test reverted) | `artifact_rewritten` | `high` |
-| Builder rejects a staged fix with a reason | `fix_rejected` | `medium` |
-| Complex diagnosis deferred to systematic-debugging | `complex_diagnosis_deferred` | `medium` |
-| Builder declines a Pattern #13 complement offer | `complement_rejected` | `high` |
-| Repeated same-failure runs across sessions (>=3) | `recurring_failure` | `low` |
+| Builder overrides fix's proposed remediation and picks a manual patch (quote both fixes in `symptom`) | `default_overridden` | `medium` |
+| Fix flags a harness-level break (F2) the builder says is intentional | `harness_break` | `medium` |
+| Builder declines a Pattern #13 complement offer (set `complement_involved`) | `complement_rejected` | `high` |
+| Auto-written test rollback leaves the suite worse than before fix was invoked | `generation_pattern_mismatch` | `high` |
 
 When in doubt, don't log. False positives poison `/evolve`.
 

@@ -186,10 +186,10 @@ JSON output is **level-invariant**.
 
 | Trigger | friction_type | confidence |
 |---------|---------------|------------|
-| Builder declines the adapter proposal | `coverage_adapter_refused` | `medium` |
-| Coverage run crashes (harness-break surfaced) | `harness_break` | `high` |
-| Builder declines a Pattern #13 complement offer | `complement_rejected` | `high` |
-| Cherry-picked denominator detected at runtime | `cherry_picked_denominator` | `medium` |
+| Builder declines the adapter proposal (e.g., `--coverage.all` addition) | `coverage_adapter_refused` | `medium` |
+| Builder disputes the tier threshold the weighted score is measured against (capture claimed + measured tier in `symptom`) | `tier_threshold_dispute` | `medium` |
+| Builder declines a Pattern #13 complement offer (set `complement_involved`) | `complement_rejected` | `medium` |
+| `c8 --all` fallback fails or produces a clearly wrong denominator | `harness_break` | `high` |
 
 When in doubt, don't log. False positives poison `/evolve`.
 
