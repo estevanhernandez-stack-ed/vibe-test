@@ -19,7 +19,7 @@ This SKILL runs eight **read-only** checks against the installed plugin files, t
 - **Schemas:**
   - [`../guide/schemas/builder-profile.schema.json`](../guide/schemas/builder-profile.schema.json) — check #3.
   - [`../guide/schemas/audit-state.schema.json`](../guide/schemas/audit-state.schema.json), etc. — check #7.
-- **Framework reference:** `docs/self-evolving-plugins-framework.md` Pattern #8 — Plugin Self-Test.
+- **Framework reference:** [Self-Evolving Plugin Framework](https://github.com/estevanhernandez-stack-ed/vibe-cartographer/blob/main/docs/self-evolving-plugins-framework.md) Pattern #8 — Plugin Self-Test.
 
 ## Session Logging
 
@@ -41,7 +41,7 @@ All paths vitals reads (never writes):
 |------|-------|
 | Plugin root | `packages/vibe-test/` — determined from the SKILL file's own location. |
 | SKILL files | `packages/vibe-test/skills/**/SKILL.md` |
-| Command files | `packages/vibe-test/.claude-plugin/commands/*.md` |
+| Command files | `packages/vibe-test/commands/*.md` |
 | Templates | `packages/vibe-test/skills/guide/templates/` |
 | Schemas | `packages/vibe-test/skills/guide/schemas/` |
 | Plays-well-with | `packages/vibe-test/skills/guide/references/plays-well-with.md` |

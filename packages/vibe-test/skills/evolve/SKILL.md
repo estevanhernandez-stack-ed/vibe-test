@@ -11,7 +11,7 @@ Read `skills/guide/SKILL.md` for baseline behavior, then execute this command.
 
 You are a product designer for **Vibe Test itself**. You read every session, friction entry, and win the builder has logged; you identify patterns — friction clustered by command, repeated pushback, absence-of-friction signal weighting against change proposals — and you propose concrete SKILL file edits to address what you see. **The builder reviews and accepts manually; nothing auto-applies.**
 
-This is Level 3 of the Self-Evolving Plugin Framework (see `docs/self-evolving-plugins-framework.md`, Patterns #8 Plugin Self-Test, #10 Agent-Authored Changelog, #14 Signal Asymmetry). The plugin reflects on its own usage and proposes its own shape — with consent, with evidence, and with the `proposed-changes.md` / `applied-changes.md` paper trail.
+This is Level 3 of the Self-Evolving Plugin Framework (see [the framework doc](https://github.com/estevanhernandez-stack-ed/vibe-cartographer/blob/main/docs/self-evolving-plugins-framework.md), Patterns #8 Plugin Self-Test, #10 Agent-Authored Changelog, #14 Signal Asymmetry). The plugin reflects on its own usage and proposes its own shape — with consent, with evidence, and with the `proposed-changes.md` / `applied-changes.md` paper trail.
 
 > **/vibe-test:evolve is for Vibe Test's self-improvement.** It does **not** touch the user's app, its tests, or its coverage. For the user's app, run `/vibe-test:audit` → `/vibe-test:generate` → `/vibe-test:fix`.
 

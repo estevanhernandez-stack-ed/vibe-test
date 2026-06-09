@@ -22,7 +22,7 @@ If you are a command SKILL that says *"follow `skills/guide/SKILL.md` for person
 - **Plays well with (Pattern #13 anchored):** [`references/plays-well-with.md`](./references/plays-well-with.md) — the 7 complement entries with deferral contracts.
 - **Friction triggers:** [`references/friction-triggers.md`](./references/friction-triggers.md) — per-command trigger contracts. Every command SKILL's "Friction Logging" section mirrors a row here.
 - **Schemas:** [`schemas/`](./schemas/) — JSON Schema Draft-07 for every state file.
-- **Framework reference:** `docs/self-evolving-plugins-framework.md` Patterns #4, #6, #10, #12, #13, #14, #15, #16.
+- **Framework reference:** [Self-Evolving Plugin Framework](https://github.com/estevanhernandez-stack-ed/vibe-cartographer/blob/main/docs/self-evolving-plugins-framework.md) Patterns #4, #6, #10, #12, #13, #14, #15, #16.
 
 ## Persona Adaptation
 
@@ -69,7 +69,7 @@ Apply the level to **every user-facing surface** — banner, markdown, SKILL pro
 
 ## Classification Matrix
 
-Read `framework.md` (monorepo root) for the full matrix; the condensed reference lives here so command SKILLs don't need to re-load the framework doc.
+Read `framework.md` (`packages/vibe-test/framework.md` in the solo repo) for the full matrix; the condensed reference lives here so command SKILLs don't need to re-load the framework doc.
 
 **6 app types** × **5 tiers** × context modifiers.
 
