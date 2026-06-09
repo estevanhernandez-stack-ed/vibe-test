@@ -9,7 +9,7 @@ description: "Internal SKILL — not a slash command in v0.2. Invoked by /vibe-t
 
 Internal SKILL. In v0.2 vitals is invoked only by `skills/evolve/SKILL.md` at its start — never by the user directly. v0.3 adds a `/vibe-test:vitals` slash command; until then the checks are part of evolve's pre-flight.
 
-This SKILL runs seven **read-only** checks against the installed plugin files, the unified profile, the session/friction/wins logs, and the anchored composition registry. It prints a banner-style report with per-check status (✓ pass, ⚠ warn, ✗ fail) and a summary line. **No fix ever runs without an explicit `[y/n]`** — vitals surfaces findings; the user chooses whether to apply remediation. In v0.2 the remediation half is deferred to the caller (`/evolve`); vitals itself never writes.
+This SKILL runs eight **read-only** checks against the installed plugin files, the unified profile, the session/friction/wins logs, the anchored composition registry, and the release tag history. It prints a banner-style report with per-check status (✓ pass, ⚠ warn, ✗ fail) and a summary line. **No fix ever runs without an explicit `[y/n]`** — vitals surfaces findings; the user chooses whether to apply remediation. In v0.2 the remediation half is deferred to the caller (`/evolve`); vitals itself never writes.
 
 ## Before You Start
 
@@ -52,7 +52,7 @@ All paths vitals reads (never writes):
 | Wins log | `~/.claude/plugins/data/vibe-test/wins.jsonl` |
 | Plugin manifest | `packages/vibe-test/.claude-plugin/plugin.json` (for banner version) |
 
-## The Seven Checks
+## The Eight Checks
 
 ### Check #1 — SKILL cross-references resolve
 
@@ -113,6 +113,16 @@ For every per-project state file at `<project>/.vibe-test/state/*.json`, parse a
 - ⚠ warn: non-critical shape drift (unknown optional fields, trailing junk).
 - ✗ fail: parse error OR required-field violation OR schema_version mismatch unreconcilable by migration.
 
+### Check #8 — Release consistency (tag ↔ manifest)
+
+Runs only when the plugin root sits inside a git work tree with `vibe-test-v*` tags
+reachable; skips silently in installed-cache contexts. Read `.claude-plugin/plugin.json`
+`version`; read the highest `vibe-test-v<semver>` tag; compare.
+
+- ✓ pass: manifest version equals the highest release tag's version.
+- ⚠ warn: manifest version is ahead of the highest tag (release staged, not yet tagged — normal mid-promotion).
+- ✗ fail: highest tag is ahead of the manifest — a tag shipped without the version bump; every banner, session-log entry, and Pattern #15 resolution downstream reports the stale number.
+
 Vitals never writes; it reports. The caller (`/evolve` in v0.2) decides whether to offer remediation.
 
 ## Output Format
@@ -140,7 +150,7 @@ Summary:
   <N> ✓  ·  <N> ⚠  ·  <N> ✗
 ```
 
-The seven counts sum to 7.
+The eight counts sum to 8.
 
 ## Why This SKILL Exists
 
