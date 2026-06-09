@@ -65,6 +65,22 @@ Read the following over the last **30 days**, line-by-line, silently skipping ma
 2. `~/.claude/plugins/data/vibe-test/wins.jsonl` — win entries (Pattern #14 baseline).
 3. `~/.claude/plugins/data/vibe-test/sessions/*.jsonl` — session logs.
 
+**Synthetic-entry filter:** before weighting, exclude entries from smoke/CI self-tests —
+any entry whose `project` matches `^smoke-` or whose `symptom` embeds a `SMOKE-<digits>`
+marker. Count exclusions and show them in the summary banner. Smoke entries validate
+plumbing, not builder experience; they must not feed weights or baselines on either side.
+
+**Stale-window guard:** if zero entries survive inside the 30-day window but older
+entries exist, do not improvise. State exactly that, then offer:
+
+```
+  No Vibe Test signal in the last 30 days (newest entry: <date>).
+  [Widen to all-time — weights flagged stale]  [Abort]
+```
+
+A widened run labels every pattern weight and baseline as stale-window in
+`proposed-changes.md` and the banner.
+
 Then read every SKILL file in `packages/vibe-test/skills/**/SKILL.md` so your proposed diffs quote exact current text.
 
 ### 3. Analyze — weighted aggregation with absence-of-friction inference
