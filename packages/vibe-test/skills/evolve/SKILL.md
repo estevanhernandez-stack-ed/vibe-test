@@ -18,7 +18,7 @@ This is Level 3 of the Self-Evolving Plugin Framework (see `docs/self-evolving-p
 ## Prerequisites
 
 - **Blocking:** at least one session-log entry must exist under `~/.claude/plugins/data/vibe-test/sessions/`. If not: *"You haven't run any Vibe Test command yet. Run `/vibe-test` then `/vibe-test:audit` on a real project first, then come back."*
-- **Blocking:** the builder must be invoking this from inside the Vibe Plugins monorepo (`packages/vibe-test/` reachable from cwd). If not: refuse — the SKILL writes to `packages/vibe-test/proposed-changes.md`, which requires the repo context.
+- **Blocking:** the builder must be invoking this from inside the **vibe-test solo repo**. Verify BOTH before any write: (1) `git config --get remote.origin.url` resolves to `estevanhernandez-stack-ed/vibe-test` (any URL form, with or without `.git`), and (2) `packages/vibe-test/skills/evolve/SKILL.md` exists under the resolved repo root. If either fails: refuse and name which check failed. Lookalike directories exist — a non-repo scratch dir named `vibe-test`, and an archived `drafts/vibe-test/proposed-changes.md` in the vibe-plugins marketplace repo. Never write proposals into a directory that merely looks the part.
 
 ## Before You Start
 
@@ -30,7 +30,7 @@ This is Level 3 of the Self-Evolving Plugin Framework (see `docs/self-evolving-p
 
 ## Session Logging
 
-At command start, call `session-logger.start("evolve", <repo-root>)` (the vibe-plugins root, resolved from the SKILL's own file location). Hold the sessionUUID for the duration of this command. Pass it to any `friction-logger.log()` invocation (evolve itself does not emit friction per `friction-triggers.md`; proposal rejections become `default_overridden` against the **target** command — see Step 5b).
+At command start, call `session-logger.start("evolve", <repo-root>)` (the solo repo root, resolved from the SKILL's own file location). Hold the sessionUUID for the duration of this command. Pass it to any `friction-logger.log()` invocation (evolve itself does not emit friction per `friction-triggers.md`; proposal rejections become `default_overridden` against the **target** command — see Step 5b).
 
 At command end, call `session-logger.end({ sessionUUID, command: "evolve", outcome })`:
 - `completed` — full flow ran, proposals written to disk.
