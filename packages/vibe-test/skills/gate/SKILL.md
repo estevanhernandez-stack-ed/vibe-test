@@ -77,6 +77,7 @@ Surface at most ONE anchored complement announcement per invocation. In CI mode,
 1. Try to read `<repo>/.vibe-test/state/audit.json`. If present AND `last_updated` is within 24h:
    - Extract `classification.app_type`, `classification.tier`, `classification.modifiers`, `classification.confidence`.
    - Record `audit_state_source: 'reused'`.
+   - **`unsupported-stack` short-circuits to exit 2 (v0.3.0, GAP-13 Tier 1).** A declined classification means the gate CANNOT assess — that is the tool-error verdict, not a pass and not a threshold breach. Exit 2 with: *"unsupported stack: Vibe Test has no scanner for this stack — gate cannot assess. This is not a pass."* (name the stacks from the classifier's reason). CI annotation in CI mode, banner in local mode, `gate.json` verdict `tool-error`. The same short-circuit applies when inline classification (2.2 below) produces the decline. Silence on an unassessable repo is the old bug, not a feature.
 2. If absent or stale:
    - Invoke `scan(repoRoot)` → Inventory.
    - Invoke `classifyAppType({detection, routes, models, componentCount})` + `classifyModifiers(...)`.

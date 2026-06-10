@@ -8,7 +8,7 @@ Open a GitHub issue at [vibe-plugins/issues](https://github.com/estevanhernandez
 
 ## Current audit status
 
-`pnpm audit` at `C:\Users\estev\Projects\vibe-plugins` on 2026-04-18 reports:
+`pnpm audit` at the vibe-plugins repo root on 2026-04-18 reports:
 
 - **0 critical**
 - **0 high**

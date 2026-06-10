@@ -82,14 +82,21 @@ Result shape is `Inventory` (see `src/scanner/index.ts`). Validate:
 
 Call `classifyAppType({detection, routes, models, componentCount})` from `@esthernandez/vibe-test/scanner`. The function returns `{app_type, reason, confidence}` via a first-match-wins rule matrix. Do NOT second-guess the rule result; instead, surface the `reason` field verbatim in the banner and markdown so the builder can audit the call.
 
-The rule order (most specific → least specific):
+The rule order (most specific → least specific, v0.3.0):
 
-1. Multi-tenant signals + frontend + (backend or db) → `multi-tenant-saas`
-2. Frontend + database → `full-stack-db`
-3. Frontend + (backend or any route) → `spa-api`
-4. Backend or routes only, no frontend → `api-service`
-5. Frontend only, no routes, no backend → `spa`
-6. None of the above → `static`
+1. Foreign-stack markers + no JS/TS manifest → `unsupported-stack` (honest decline)
+2. `.claude-plugin/plugin.json` anywhere conventional → `claude-code-plugin`
+3. Multi-tenant signals + frontend + (backend or db) → `multi-tenant-saas`
+4. Frontend + database → `full-stack-db`
+5. Frontend + (backend or any route) → `spa-api`
+6. Backend or routes only, no frontend → `api-service`
+7. Frontend only, no routes, no backend → `spa`
+8. `package.json` bin or CLI-framework dep, no web surface → `cli-tool`
+9. Entry points published, no UI/server/bin → `library`
+10. Foreign-stack markers dominating a token JS manifest → `unsupported-stack`
+11. None of the above → `static`
+
+**Unsupported-stack decline (v0.3.0, GAP-13 Tier 1).** When `app_type` comes back `unsupported-stack`, the audit STOPS after classification — no coverage measurement, no weighted score, no gap ranking, and **no `covered-surfaces.json` write** (an artifact would tell vibe-sec the surface was assessed; it wasn't). Write `state.json` with the classification (so posture/gate see the decline), render the banner with the classifier's `reason` verbatim plus one line: *"Out of scope: Vibe Test has no scanner for this stack. This is a declaration, not a zero score — nothing here implies the app was assessed."* Point at what does cover the stack where the family has it (e.g. vibe-sec `:deps` ecosystem advisories). Do not improvise a hand-rolled assessment of a stack the scanner can't read.
 
 #### 4b — Tier (fuzzy — you reason)
 

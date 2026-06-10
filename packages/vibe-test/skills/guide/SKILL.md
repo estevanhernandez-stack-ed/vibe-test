@@ -71,7 +71,7 @@ Apply the level to **every user-facing surface** — banner, markdown, SKILL pro
 
 Read `framework.md` (`packages/vibe-test/framework.md` in the solo repo) for the full matrix; the condensed reference lives here so command SKILLs don't need to re-load the framework doc.
 
-**6 app types** × **5 tiers** × context modifiers.
+**10 app types** × **5 tiers** × context modifiers.
 
 ### App types (deterministic rule match)
 
@@ -83,6 +83,20 @@ Read `framework.md` (`packages/vibe-test/framework.md` in the solo repo) for the
 | `full-stack-db` | `spa-api` + database layer (Prisma/Drizzle/raw pg/mysql). |
 | `api-service` | Server code with routes, no UI layer. |
 | `multi-tenant-saas` | `full-stack-db` + auth + tenant boundary (RLS hints, org scope, user_id plumbing in routes). |
+| `claude-code-plugin` | `.claude-plugin/plugin.json` at root, one level down, or under `packages/`/`plugins/` (first-match rule, wins over everything below multi-tenant). |
+| `cli-tool` | `package.json` bin entry (or commander/yargs/oclif-class dep) with no web surface. |
+| `library` | Entry points (`main`/`module`/`exports`/`types`) published; no UI, no server, no bin. |
+| `unsupported-stack` | Foreign-stack markers (.csproj/.sln, pyproject/requirements, go.mod, Cargo.toml, pom.xml/gradle, Rojo/wally/.luau, Package.swift) with no — or only a token — JS/TS manifest. **Honest decline:** no score, audit skips the scoring pipeline, gate exits 2 (cannot assess). Never report a "static"-shaped zero on a stack the scanner can't read. |
+
+### Denominators for the product shapes (v0.3.0, GAP-20)
+
+Coverage denominators for the three product-shape types are NOT routes/pages:
+
+- `claude-code-plugin` — schemas + scripts + skill-contract surfaces (commands, hooks, emitted-artifact writers). A plugin that gate-passes on one smoke test has a cherry-picked denominator (F2).
+- `cli-tool` — command handlers + the exit-code contract paths (each documented exit code is a behavioral surface).
+- `library` — the exported public API (everything `exports`/`main` reaches).
+
+Tier note: a plugin or CLI **distributed through a marketplace or registry ships to strangers** — default its tier floor to `public-facing` unless the builder explicitly states it's personal/internal. The prototype bar on a published artifact is how a v1.0.0 CLI ships with zero tests.
 
 ### Tiers (fuzzy — SKILL may prompt)
 
@@ -180,7 +194,7 @@ or any paraphrase that keeps the same structure: **imperative verb + backticked 
 
 **Do NOT prescribe `/clear` between commands.** Claude Code auto-compacts the conversation as context fills — the system prompt explicitly states the conversation is not limited by the context window. The `/clear`-between-commands pattern is obsolete guidance that predates auto-compaction. Every Vibe Test command SKILL uses the "run `/<next>` when ready" phrasing and never the "`/clear`, then run" variant.
 
-Rationale is in `C:\Users\estev\.claude\projects\C--Users-estev-Projects-vibe-test\memory\feedback_no_manual_clear.md` — this is a user-tested correction.
+Rationale: a user-tested correction recorded in the maintainer's memory notes (`feedback_no_manual_clear`).
 
 ## Version Resolution (Pattern #15)
 

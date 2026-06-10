@@ -130,6 +130,10 @@ The app type and deployment context determine which test levels are mandatory:
 | Full-stack + DB | Required | Required | Required | Required | Recommended |
 | API service | Required | Required | Required | Required | Required |
 | Multi-tenant SaaS | Required | Required | Required | Required | Required |
+| Claude Code plugin | Required | Required | Required (schemas + scripts) | Recommended (skill contracts) | Skip |
+| CLI tool | Required | Required (per command handler) | Required (exit-code contract) | Recommended | Optional |
+| Library | Required | Required (public API) | Required | Skip | Optional |
+| Unsupported stack | — declined: no scanner for the stack; no levels are claimed, gate cannot assess (exit 2) — | | | | |
 
 ### Context Modifiers
 

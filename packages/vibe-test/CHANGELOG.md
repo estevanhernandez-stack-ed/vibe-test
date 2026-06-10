@@ -4,6 +4,26 @@ All notable changes to `@esthernandez/vibe-test` will be documented in this file
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0] — 2026-06-09 · The tool learns its own product type (GAP-20 + GAP-13 Tier 1)
+
+From the quality-net gap analysis (vibe-plugins `docs/quality-net-gap-analysis-2026-06-09.md`): the family's own test tool could not name the family's own app type — a shipped stable-channel plugin classified as "static site" and was gate-passable on one smoke test, and a .NET repo silently no-op'd into a zero-source "static" that read as coverage.
+
+### Added
+
+- **Four new app types.** `claude-code-plugin` (the `.claude-plugin/plugin.json` first-match rule — root, one level down, `packages/*`, `plugins/*`; denominator: schemas + scripts + skill contracts), `cli-tool` (package.json `bin` or a commander/yargs/oclif-class dep; denominator: command handlers + exit-code contract), `library` (entry points without surface; denominator: exported public API), and `unsupported-stack` (see below). Matrix rows with per-level requirements in `framework.md` + the guide SKILL; marketplace/registry-distributed plugins and CLIs floor at `public-facing` tier — published artifacts ship to strangers.
+- **Honest decline (`unsupported-stack`).** Foreign-stack markers (dotnet/python/go/rust/jvm/luau/swift, bounded depth-3 scan) with no — or only a token — JS/TS manifest now produce a declared out-of-scope: audit stops after classification (no score, no `covered-surfaces.json` write), gate exits 2 ("cannot assess — this is not a pass"). A "static" classification on a stack the scanner can't read implied assessment that never happened.
+- **Detector signals.** `DetectionResult` gains `pluginManifests`, `binEntries`, `libraryEntrySignals`, `foreignStacks`; `detectFrameworksPure` accepts them via a new optional `extras` param.
+- **Classifier unit suite** (`tests/unit/scanner/classify-app-type.test.ts`) — the rule matrix had no direct tests; the pre-v0.3 absurdities (plugin→static, .NET→static) are pinned as regressions.
+
+### Changed
+
+- **Migration note (state contract).** `Classification.app_type` widened from 6 to 10 values; `state.json` `schema_version` stays 1 (additive enum). Older vibe-test installs reading a v0.3 `state.json` will see unfamiliar `app_type` strings — they render verbatim and harm nothing, but gate/audit semantics for the new values require v0.3.0. `covered-surfaces.json` (the vibe-sec seam) is unchanged.
+- **Leak scrub (promotion-checklist burn-down).** All 8 personal-path findings from the 2026-06-09 marketplace-gate baseline removed (SECURITY.md, guide SKILL, the WSEYATM dogfood log). vibe-test's burn-down rows are clear.
+
+Dogfood (real repos, not fixtures): Vibe-Doc → `claude-code-plugin` (0.95, was "static"); Sanduhr → `unsupported-stack` naming `swift + python + dotnet` (was a silent zero); vibe-test's own repo → `claude-code-plugin`. 317 tests green.
+
+Note: `@esthernandez/vibe-test-cli` bundles the engine at build time — the new app types reach the standalone CLI on its next publish.
+
 ## [0.2.5] — 2026-06-09 · Evolve-driven structural fixes + version-field correction
 
 Applies all five proposals from the 2026-06-09 `/vibe-test:evolve` run (paper trail in `applied-changes.md`) and rolls the plugin manifest version forward, which had slipped behind the `vibe-test-v0.2.4` tag.

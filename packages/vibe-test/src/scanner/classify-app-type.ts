@@ -9,15 +9,22 @@
  * most-specific to least-specific so `multi-tenant-saas` doesn't get shadowed
  * by `full-stack-db`.
  *
- * Maps from `spec.md > Component Areas > Audit (Classifier sub-flow)`:
- *   react+vite+no-backend                 → spa
- *   react+express                         → spa-api
- *   react+firebase-firestore+fns          → full-stack-db
- *   express+fastify+no-frontend           → api-service
+ * Maps from `spec.md > Component Areas > Audit (Classifier sub-flow)`,
+ * extended in v0.3.0 (GAP-20 + GAP-13 Tier 1):
+ *   no package.json + foreign markers     → unsupported-stack (honest decline)
+ *   .claude-plugin/plugin.json anywhere   → claude-code-plugin
  *   multi-tenant signals                  → multi-tenant-saas
+ *   react+firebase-firestore+fns          → full-stack-db
+ *   react+express                         → spa-api
+ *   express+fastify+no-frontend           → api-service
+ *   react+vite+no-backend                 → spa
+ *   package.json bin / CLI framework      → cli-tool
+ *   entry points, no surface, no bin      → library
+ *   foreign markers dominate              → unsupported-stack
  *   else                                  → static
  */
 import type { DetectionResult } from './framework-detector.js';
+import { hasCliFrameworkDep } from './framework-detector.js';
 import type { AppType } from '../state/project-state.js';
 import type { ModelEntry } from './model-inventory.js';
 import type { RouteEntry } from './route-inventory.js';
@@ -75,6 +82,42 @@ export function classifyAppType(input: ClassifyAppTypeInput): ClassifyAppTypeRes
   const backend = hasBackend(det);
   const database = hasDatabase(det);
   const routeCount = input.routes?.length ?? 0;
+  const foreignStacks = det.foreignStacks ?? [];
+  const pluginManifests = det.pluginManifests ?? [];
+  const binEntries = det.binEntries ?? {};
+  const binNames = Object.keys(binEntries);
+  const libraryEntrySignals = det.libraryEntrySignals ?? [];
+
+  // Rule D — Honest decline (GAP-13 Tier 1). A repo with foreign-stack
+  // project markers and no JS/TS manifest has NOTHING the scanner can
+  // assess. "static" here would imply the stack was assessed and found
+  // empty — a silent zero-source no-op that reads as coverage. Out of
+  // scope is a declaration, not a score.
+  if (foreignStacks.length > 0 && !det.packageJson) {
+    return {
+      app_type: 'unsupported-stack',
+      reason:
+        `Detected ${foreignStacks.join(' + ')} project markers and no JS/TS ` +
+        `package manifest — Vibe Test has no scanner for this stack. ` +
+        `Declining honestly: no coverage claim, no score, gate cannot assess.`,
+      confidence: 0.9,
+    };
+  }
+
+  // Rule P — Claude Code plugin (the .claude-plugin first-match rule).
+  // A plugin's testable surface is schemas + scripts + skill contracts,
+  // not routes/pages — the denominator the matrix assigns this type.
+  if (pluginManifests.length > 0) {
+    const cliNote =
+      binNames.length > 0 ? `; also ships a CLI (bin: ${binNames.join(', ')})` : '';
+    return {
+      app_type: 'claude-code-plugin',
+      reason:
+        `Claude Code plugin manifest found (${pluginManifests.join(', ')})${cliNote}. ` +
+        `Denominator: schemas + scripts + skill contracts, not routes.`,
+      confidence: 0.95,
+    };
+  }
 
   // Rule 0 — Multi-tenant SaaS (most specific).
   if (hasMultiTenantSignals(input) && frontend && (backend || database)) {
@@ -121,6 +164,48 @@ export function classifyAppType(input: ClassifyAppTypeInput): ClassifyAppTypeRes
       app_type: 'spa',
       reason: `Client-only SPA (${det.frontend.join('+')}), no API surface detected`,
       confidence: 0.9,
+    };
+  }
+
+  // Rule C — CLI tool: a bin entry (or a recognized CLI framework) with no
+  // web surface. Denominator: command handlers + exit-code contract paths,
+  // not pages.
+  const cliFramework = hasCliFrameworkDep(det.allDependencies ?? {});
+  if (binNames.length > 0 || cliFramework) {
+    const signal =
+      binNames.length > 0
+        ? `package.json bin (${binNames.join(', ')})`
+        : 'CLI framework dependency';
+    return {
+      app_type: 'cli-tool',
+      reason: `${signal}, no web surface detected. Denominator: command handlers + exit-code contract.`,
+      confidence: binNames.length > 0 ? 0.9 : 0.75,
+    };
+  }
+
+  // Rule L — Library: entry points published, no UI, no server, no bin.
+  // Denominator: the exported public API surface.
+  if (libraryEntrySignals.length > 0) {
+    return {
+      app_type: 'library',
+      reason:
+        `package.json entry points (${libraryEntrySignals.join(', ')}) with no ` +
+        `frontend/backend/bin — consumed as a library. Denominator: exported public API.`,
+      confidence: 0.8,
+    };
+  }
+
+  // Rule D2 — Foreign stack dominates a token JS manifest (e.g. a Python
+  // pipeline repo carrying only a prettier devDep). Same honest decline.
+  if (foreignStacks.length > 0) {
+    return {
+      app_type: 'unsupported-stack',
+      reason:
+        `A JS/TS manifest exists but carries no framework signals, while ` +
+        `${foreignStacks.join(' + ')} project markers are present — the dominant ` +
+        `stack has no Vibe Test scanner. Declining honestly rather than scoring ` +
+        `the JS sliver as if it were the app.`,
+      confidence: 0.8,
     };
   }
 

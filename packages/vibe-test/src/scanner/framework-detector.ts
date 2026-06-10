@@ -38,6 +38,16 @@ export type DatabaseType = 'firestore' | 'prisma' | 'drizzle' | 'sqlite' | 'post
 
 export type AuthProvider = 'firebase-auth' | 'clerk' | 'auth0' | 'next-auth';
 
+/** Non-JS stacks Vibe Test recognizes well enough to decline honestly. */
+export type ForeignStack =
+  | 'dotnet'
+  | 'python'
+  | 'go'
+  | 'rust'
+  | 'jvm'
+  | 'luau'
+  | 'swift';
+
 export interface DetectionResult {
   test: TestFramework[];
   frontend: FrontendFramework[];
@@ -52,6 +62,21 @@ export interface DetectionResult {
   packageJsonPath: string | null;
   /** Parsed package.json, when present. */
   packageJson: PackageJsonShape | null;
+  /**
+   * Claude Code plugin manifests found (root, one level down, and the
+   * conventional packages/<x>/ + plugins/<x>/ parents) — repo-relative
+   * paths. The `.claude-plugin/plugin.json` first-match rule.
+   */
+  pluginManifests: string[];
+  /** package.json bin entries (command name → script path); {} when none. */
+  binEntries: Record<string, string>;
+  /** Library entry-point fields present on package.json (main/module/exports/types). */
+  libraryEntrySignals: string[];
+  /**
+   * Foreign-stack project markers found at the root or one level down —
+   * the honest-decline signal (GAP-13 Tier 1).
+   */
+  foreignStacks: ForeignStack[];
 }
 
 const TEST_DEPS: Record<string, TestFramework> = {
@@ -111,6 +136,53 @@ const AUTH_DEPS: Record<string, AuthProvider> = {
   '@auth0/auth0-react': 'auth0',
   'next-auth': 'next-auth',
 };
+
+/** CLI argument-parser frameworks — a strong cli-tool signal even without bin. */
+const CLI_FRAMEWORK_DEPS = new Set([
+  'commander',
+  'yargs',
+  'oclif',
+  '@oclif/core',
+  'cac',
+  'citty',
+  'meow',
+  'clipanion',
+]);
+
+/** True when the dependency map carries a recognized CLI framework. */
+export function hasCliFrameworkDep(allDependencies: Record<string, string>): boolean {
+  return Object.keys(allDependencies).some((d) => CLI_FRAMEWORK_DEPS.has(d));
+}
+
+const FOREIGN_STACK_MARKERS: Array<{
+  stack: ForeignStack;
+  test: (name: string) => boolean;
+}> = [
+  {
+    stack: 'dotnet',
+    test: (n) => n.endsWith('.sln') || n.endsWith('.csproj') || n.endsWith('.fsproj'),
+  },
+  {
+    stack: 'python',
+    test: (n) =>
+      n === 'pyproject.toml' ||
+      n === 'requirements.txt' ||
+      n === 'setup.py' ||
+      n === 'Pipfile' ||
+      n === 'uv.lock',
+  },
+  { stack: 'go', test: (n) => n === 'go.mod' },
+  { stack: 'rust', test: (n) => n === 'Cargo.toml' },
+  {
+    stack: 'jvm',
+    test: (n) => n === 'pom.xml' || n === 'build.gradle' || n === 'build.gradle.kts',
+  },
+  {
+    stack: 'luau',
+    test: (n) => n === 'default.project.json' || n === 'wally.toml' || n.endsWith('.luau'),
+  },
+  { stack: 'swift', test: (n) => n === 'Package.swift' },
+];
 
 const CONFIG_FILES = [
   'vitest.config.ts',
@@ -186,6 +258,110 @@ async function readPackageJson(rootPath: string): Promise<{
   }
 }
 
+function binEntriesOf(pkg: PackageJsonShape | null): Record<string, string> {
+  if (!pkg) return {};
+  const bin = (pkg as { bin?: unknown }).bin;
+  if (typeof bin === 'string') return { [pkg.name ?? 'cli']: bin };
+  if (bin && typeof bin === 'object' && !Array.isArray(bin)) {
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(bin as Record<string, unknown>)) {
+      if (typeof v === 'string') out[k] = v;
+    }
+    return out;
+  }
+  return {};
+}
+
+function libraryEntrySignalsOf(pkg: PackageJsonShape | null): string[] {
+  if (!pkg) return [];
+  return ['main', 'module', 'exports', 'types'].filter(
+    (f) => f in pkg && pkg[f] != null,
+  );
+}
+
+/** Parents under which `.claude-plugin/plugin.json` conventionally lives. */
+const PLUGIN_MANIFEST_PARENTS = ['', 'packages', 'plugins'];
+
+async function findPluginManifests(rootPath: string): Promise<string[]> {
+  const hits: string[] = [];
+  try {
+    await fs.access(join(rootPath, '.claude-plugin', 'plugin.json'));
+    hits.push('.claude-plugin/plugin.json');
+  } catch {
+    // no root manifest
+  }
+  for (const parent of PLUGIN_MANIFEST_PARENTS) {
+    const base = parent ? join(rootPath, parent) : rootPath;
+    let entries;
+    try {
+      entries = await fs.readdir(base, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const e of entries) {
+      if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules') {
+        continue;
+      }
+      const rel = parent ? `${parent}/${e.name}` : e.name;
+      try {
+        await fs.access(join(base, e.name, '.claude-plugin', 'plugin.json'));
+        hits.push(`${rel}/.claude-plugin/plugin.json`);
+      } catch {
+        // not a plugin dir
+      }
+    }
+  }
+  return [...new Set(hits)];
+}
+
+const FOREIGN_SCAN_SKIP_DIRS = new Set([
+  'node_modules',
+  'dist',
+  'build',
+  'out',
+  'bin',
+  'obj',
+  '.next',
+  'coverage',
+  '__pycache__',
+]);
+
+/**
+ * Bounded depth-3 walk: real-world repos nest project files (the Sanduhr
+ * shape — `windows-dotnet/src/<project>/<project>.csproj` is three levels
+ * down). readdir-only, skip-dir pruned, so the cost stays trivial.
+ */
+async function findForeignStacks(
+  rootPath: string,
+  maxDepth = 3,
+): Promise<ForeignStack[]> {
+  const found = new Set<ForeignStack>();
+  const scanDir = async (dir: string, depth: number): Promise<void> => {
+    let entries;
+    try {
+      entries = await fs.readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (e.isFile()) {
+        for (const { stack, test } of FOREIGN_STACK_MARKERS) {
+          if (test(e.name)) found.add(stack);
+        }
+      } else if (
+        e.isDirectory() &&
+        depth < maxDepth &&
+        !e.name.startsWith('.') &&
+        !FOREIGN_SCAN_SKIP_DIRS.has(e.name)
+      ) {
+        await scanDir(join(dir, e.name), depth + 1);
+      }
+    }
+  };
+  await scanDir(rootPath, 0);
+  return [...found];
+}
+
 async function findConfigFiles(rootPath: string): Promise<string[]> {
   const hits: string[] = [];
   for (const name of CONFIG_FILES) {
@@ -233,7 +409,11 @@ function union<T>(a: readonly T[], b: readonly T[]): T[] {
 
 export async function detectFrameworks(rootPath: string): Promise<DetectionResult> {
   const pkg = await readPackageJson(rootPath);
-  const configFiles = await findConfigFiles(rootPath);
+  const [configFiles, pluginManifests, foreignStacks] = await Promise.all([
+    findConfigFiles(rootPath),
+    findPluginManifests(rootPath),
+    findForeignStacks(rootPath),
+  ]);
   const allDependencies = pkg ? mergeDeps(pkg.data) : {};
 
   const testFromDeps = lookupMany(allDependencies, TEST_DEPS);
@@ -254,6 +434,10 @@ export async function detectFrameworks(rootPath: string): Promise<DetectionResul
     configFiles,
     packageJsonPath: pkg?.path ?? null,
     packageJson: pkg?.data ?? null,
+    pluginManifests,
+    binEntries: binEntriesOf(pkg?.data ?? null),
+    libraryEntrySignals: libraryEntrySignalsOf(pkg?.data ?? null),
+    foreignStacks,
   };
 }
 
@@ -261,6 +445,7 @@ export async function detectFrameworks(rootPath: string): Promise<DetectionResul
 export function detectFrameworksPure(
   pkg: PackageJsonShape | null,
   configFiles: string[],
+  extras: { pluginManifests?: string[]; foreignStacks?: ForeignStack[] } = {},
 ): DetectionResult {
   const allDependencies = pkg ? mergeDeps(pkg) : {};
   const testFromDeps = lookupMany(allDependencies, TEST_DEPS);
@@ -279,5 +464,9 @@ export function detectFrameworksPure(
     configFiles,
     packageJsonPath: null,
     packageJson: pkg,
+    pluginManifests: extras.pluginManifests ?? [],
+    binEntries: binEntriesOf(pkg),
+    libraryEntrySignals: libraryEntrySignalsOf(pkg),
+    foreignStacks: extras.foreignStacks ?? [],
   };
 }

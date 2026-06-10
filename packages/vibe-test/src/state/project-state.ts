@@ -12,7 +12,17 @@ export type AppType =
   | 'spa-api'
   | 'full-stack-db'
   | 'api-service'
-  | 'multi-tenant-saas';
+  | 'multi-tenant-saas'
+  // Product shapes the family itself ships (v0.3.0, GAP-20): a plugin's
+  // denominator is schemas + scripts + skill contracts, a CLI's is command
+  // handlers, a library's is its exported API — never routes/pages.
+  | 'claude-code-plugin'
+  | 'cli-tool'
+  | 'library'
+  // Honest decline (v0.3.0, GAP-13 Tier 1): the dominant stack has no
+  // Vibe Test scanner. Out of scope is a declaration, not a zero score —
+  // audit skips scoring entirely and gate exits 2 (cannot assess).
+  | 'unsupported-stack';
 
 export type Tier =
   | 'prototype'

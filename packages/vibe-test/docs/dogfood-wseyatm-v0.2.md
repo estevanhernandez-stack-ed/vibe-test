@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-18
 **Plugin version:** `@esthernandez/vibe-test@0.2.0` + `@esthernandez/vibe-test-cli@0.2.0`
-**Target:** `C:\Users\estev\Projects\WeSeeYouAtTheMovies` — the real vibe-coded app, not the fixture.
+**Target:** `<path-to>\WeSeeYouAtTheMovies` — the real vibe-coded app, not the fixture.
 **Why this is the ship gate:** WSYATM is the original first-patient reference. If v0.2 can't reproduce its three known findings (broken vitest forks-pool, missing jest binary, cherry-picked denominator) against the live code, the claim "catches the broken harnesses every other test tool assumes away" doesn't land.
 
 This report captures the four CLI sub-tests from checklist item #12. The fifth sub-test (`generate`) is explicitly skipped because v0.2 CLI is deterministic-only — `generate` / `fix` live in the plugin SKILL layer and require a Claude Code session.
@@ -10,13 +10,13 @@ This report captures the four CLI sub-tests from checklist item #12. The fifth s
 ## Setup
 
 - Ran from monorepo root: `pnpm --filter @esthernandez/vibe-test build && pnpm --filter @esthernandez/vibe-test-cli build`
-- Invoked via: `node packages/vibe-test-cli/dist/index.js <subcommand> --cwd C:\Users\estev\Projects\WeSeeYouAtTheMovies`
+- Invoked via: `node packages/vibe-test-cli/dist/index.js <subcommand> --cwd <path-to>\WeSeeYouAtTheMovies`
 - Read-only operations only — no writes back to the WSYATM tree beyond the `docs/vibe-test/` artifacts the CLI always produces.
 
 ## Sub-test 1 — `audit`
 
 ```text
-node packages/vibe-test-cli/dist/index.js audit --cwd C:\Users\estev\Projects\WeSeeYouAtTheMovies
+node packages/vibe-test-cli/dist/index.js audit --cwd <path-to>\WeSeeYouAtTheMovies
 ```
 
 **Result:** exit 0. Classification: `spa-api`, tier `internal` (CLI deterministic floor — full tier reasoning requires the plugin SKILL), confidence 0.90. Inventory: **16 routes, 104 components, 0 models, 1 integration**. Artifacts written to `<wseyatm>/docs/vibe-test/audit-<ts>.md` + `inventory.json`.
@@ -48,7 +48,7 @@ Auto-detected framework per subdirectory via `detectFrameworks()`:
 ## Sub-test 2 — `coverage`
 
 ```text
-node packages/vibe-test-cli/dist/index.js coverage --cwd C:\Users\estev\Projects\WeSeeYouAtTheMovies
+node packages/vibe-test-cli/dist/index.js coverage --cwd <path-to>\WeSeeYouAtTheMovies
 ```
 
 **Result:** exit 0. Output:
@@ -72,7 +72,7 @@ For the full per-level coverage report (smoke / behavioral / edge / integration 
 ## Sub-test 3 — `gate --ci`
 
 ```text
-node packages/vibe-test-cli/dist/index.js gate --ci --cwd C:\Users\estev\Projects\WeSeeYouAtTheMovies
+node packages/vibe-test-cli/dist/index.js gate --ci --cwd <path-to>\WeSeeYouAtTheMovies
 ```
 
 **Result:** **exit 1** (threshold breach). GitHub Actions annotations emitted:
@@ -94,7 +94,7 @@ This is the behavior P6 (CI pipeline persona) expects. Ga1, Ga2 acceptance crite
 ## Sub-test 4 — `posture`
 
 ```text
-node packages/vibe-test-cli/dist/index.js posture --cwd C:\Users\estev\Projects\WeSeeYouAtTheMovies
+node packages/vibe-test-cli/dist/index.js posture --cwd <path-to>\WeSeeYouAtTheMovies
 ```
 
 **Result:** exit 0. Output (9 lines total):
