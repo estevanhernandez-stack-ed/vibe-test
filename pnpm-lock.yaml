@@ -76,17 +76,16 @@ importers:
         version: 2.1.9(@types/node@20.19.39)
 
   packages/vibe-test-cli:
-    dependencies:
+    devDependencies:
       '@esthernandez/vibe-test':
         specifier: workspace:*
         version: link:../vibe-test
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-    devDependencies:
       '@types/node':
         specifier: ^20.17.10
         version: 20.19.39
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
       tsup:
         specifier: ^8.3.5
         version: 8.5.1(postcss@8.5.10)(typescript@5.9.3)(yaml@2.8.3)
