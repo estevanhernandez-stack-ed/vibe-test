@@ -1,6 +1,6 @@
 ---
 name: generate
-description: "This skill should be used when the user says `/vibe-test:generate`. Generates tests for the gaps the most recent audit identified. Confidence-tiered routing — high-confidence tests auto-write, medium-confidence stage in `.vibe-test/pending/` for batch review, low-confidence show inline in chat for per-test accept/reject. Honors scoped audits, env-var detection, detected framework idioms, and prior team decisions. Playwright E2E generation defers to the `playwright` plugin via Pattern #13."
+description: "Use when the user says `/vibe-test:generate` or asks for the missing tests to be written — 'write the missing tests', 'generate tests for those gaps', 'add tests for X', 'fill in the coverage'. Generates tests for the gaps the most recent audit identified, confidence-tiered: high auto-write, medium stage in `.vibe-test/pending/` for batch review, low inline for per-test accept/reject. Honors scoped audits, env-var detection, framework idioms, and prior team decisions; Playwright E2E defers to the `playwright` plugin. Fires against the latest audit's gaps — with no audit on file, run :audit first rather than inventing gaps."
 argument-hint: "[--path <glob>] [--full] [--force] [--dry-run] [--apply-last-dry-run] [--with-runtime <dev-server|playwright|both>]"
 ---
 

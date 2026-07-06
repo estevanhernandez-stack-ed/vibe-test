@@ -1,6 +1,6 @@
 ---
 name: audit
-description: "This skill should be used when the user says `/vibe-test:audit`. The first real diagnostic command: scans the repo, classifies app type + tier + context modifiers, runs honest-denominator coverage, and produces ranked gaps with rationales tied back to classification. Emits three output views (markdown, terminal banner, JSON sidecar) and writes covered-surfaces.json for vibe-sec consumption."
+description: "Use when the user says `/vibe-test:audit` or wants the gap analysis — 'audit my tests', 'where are my testing gaps', 'do I have enough tests', 'what's untested', 'what am I missing before I ship'. The first real diagnostic: scans the repo, classifies app type + tier + context modifiers, runs honest-denominator coverage, and produces ranked gaps with rationales tied to the classification. Emits markdown + terminal banner + JSON sidecar and writes covered-surfaces.json for vibe-sec. For just the coverage number use :coverage; for a no-scan status read use :posture."
 argument-hint: "[--path <glob>] [--verbose | --terse]"
 ---
 

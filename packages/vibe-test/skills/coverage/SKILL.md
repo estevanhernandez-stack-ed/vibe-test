@@ -1,6 +1,6 @@
 ---
 name: coverage
-description: "This skill should be used when the user says `/vibe-test:coverage`. Standalone honest-denominator coverage measurement with builder-facing adaptation-prompt UX. Detects the test framework, proposes the diff to add `--coverage.all` (vitest) or `--collectCoverageFrom` glob (jest); only applies on builder opt-in. Falls back to `c8 --all` when adaptation is refused. Defers raw coverage parsing to `tessl:analyzing-test-coverage` when present. Emits a CI-friendly JSON sidecar at `.vibe-test/state/coverage.json` for machine consumers; exits 0 regardless of threshold (gate decides pass/fail)."
+description: "Use when the user says `/vibe-test:coverage` or wants the honest number — 'what's my real coverage', 'measure coverage', 'why does coverage say 90% but the app feels untested', 'is that coverage number lying'. Standalone honest-denominator measurement: detects the framework, proposes the diff for `--coverage.all` (vitest) or `--collectCoverageFrom` (jest), applies only on builder opt-in, falls back to `c8 --all` when refused. Defers raw parsing to `tessl:analyzing-test-coverage` when present; emits a CI-friendly JSON sidecar; exits 0 regardless of threshold (gate decides pass/fail). For ranked gaps and what-to-test-next, use :audit instead."
 argument-hint: "[--path <glob>]"
 ---
 

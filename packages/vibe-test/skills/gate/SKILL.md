@@ -1,6 +1,6 @@
 ---
 name: gate
-description: "This skill should be used when the user says `/vibe-test:gate`. The single pass/fail for tier enforcement — runs audit + coverage (reusing fresh state when available), applies tier threshold via the locked weighted-score formula, and exits with 0 (pass) / 1 (threshold breach) / 2 (tool error). Auto-detects CI mode via `GITHUB_ACTIONS=true` or `--ci` flag and emits `::error::` / `::warning::` annotations + writes GitHub Actions summary markdown to `$GITHUB_STEP_SUMMARY`. In local mode: a diagnostic banner with 'what would it take to pass' guidance. Co-invokes `superpowers:verification-before-completion` when present for verification-frame decisions."
+description: "Use when the user says `/vibe-test:gate` or wants tier enforcement — 'should CI pass', 'block merges below the test bar', 'add a test gate to CI', 'would this pass the gate'. The single pass/fail: runs audit + coverage (reusing fresh state), applies the tier threshold via the locked weighted-score formula, exits 0 (pass) / 1 (threshold breach) / 2 (tool error). Auto-detects CI mode (`GITHUB_ACTIONS=true` or `--ci`) and emits annotations + step summary; local mode renders a diagnostic banner with what-would-it-take-to-pass guidance. Co-invokes `superpowers:verification-before-completion` when present. For a human-facing status read rather than a verdict, use :posture."
 argument-hint: "[--ci] [--dry-run]"
 ---
 
