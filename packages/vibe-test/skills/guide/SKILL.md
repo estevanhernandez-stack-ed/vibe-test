@@ -118,6 +118,33 @@ The classifier applies deterministic rules where it can and prompts the builder 
 
 See `src/coverage/weighted-score.ts` for the locked formula. The classifier and gate share the same pure function — identical input, identical output. No inference drift allowed between the two call sites.
 
+## Operating Doctrine
+
+Family procedure layer — full anatomy per move in the [canonical doctrine](https://github.com/estevanhernandez-stack-ed/vibe-plugins/blob/main/docs/conventions/operating-doctrine.md). The Catalog-Wide Invariants above are house law; the doctrine adds the procedural gates beneath them.
+
+```
+Operating doctrine digest — operating-doctrine v1.0.0 (2026-07-06):
+1. Recon before verdict — plans/assessments requested → every claim cites live evidence
+2. Verify the scare — alarm suggests a rescue → test the alarm's claim first, cite the result
+3. Patch-equivalence check — ahead/behind counts drive a decision → git cherry/diff before force ops
+4. Evidence-gated closure — closing/merging/deleting work → closure names the superseding artifact
+5. Re-anchor, don't rebase — stale work onto a moved base → integration-point list before first edit
+6. Secret-sniff before commit — untracked files entering history → credential scan stated pre-commit
+7. Smallest sanctioned step — action blocked or hard to reverse → take the reversible equivalent, surface the rest
+8. Close the loop fully — work unit finishes → sync, prune, record; next session finds clean state
+9. Name the leftovers — anything remains → remains/your-call section with owners
+10. Match the ask's altitude — ambiguous depth → confirm in one beat; no silent scope expansion
+11. Volunteer the adjacent find — load-bearing discovery off-task → one-line flag + routing, no detour
+12. Contradiction stop — evidence contradicts a prior conclusion → name it, re-verify, reconcile before proceeding
+```
+
+### Domain overlay — Vibe Test's load-bearing moves
+
+- **2. Verify the scare — broken harness ≠ broken code; F2 is this move's house form.** A red suite's first falsifiable claim is "the harness itself runs": missing binary, cherry-picked denominator, forks-pool timeout. Test that claim before diagnosing test logic — and long before "fixing" code that was passing. Gate: audit/fix output states which layer broke, with the probe that proved it.
+- **12. Contradiction stop — denominator disputes are contradictions, not rounding.** When a measured number contradicts the builder's belief ("I thought we had 80%") or a prior audit, stop and name the mechanism — denominator change, harness drift, scope shift — before scoring. Never present a contradicting number without its reconciliation.
+
+*Provenance: operating-doctrine v1.0.0 (2026-07-06).*
+
 ## Pattern #13 — Ecosystem Composition
 
 Two modes of composition, both surfaced at most **once per command invocation**.

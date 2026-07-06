@@ -1,6 +1,6 @@
 ---
 name: router
-description: "This skill should be used when the user says `/vibe-test` (bare, no subcommand). The entry point to the Vibe Test plugin — greets the builder with plugin identity, detects first-run vs returning state, lists the 6 subcommands in plain language, and asks in natural language what they want to do next. No scanning. Under 10 seconds on first render."
+description: "Use when the user says `/vibe-test` bare, or asks generally about their testing situation without naming a specific diagnostic — 'how are my tests', 'help me with testing', 'what should I test', 'is my test setup any good'. The entry point: greets the builder with plugin identity, detects first-run vs returning state, lists the subcommands in plain language, and asks what they want next. No scanning; under 10 seconds on first render. When the user names a specific need (gaps, coverage number, broken tests, CI), route to the matching subcommand instead."
 ---
 
 # router — `/vibe-test` Bare Entry Point

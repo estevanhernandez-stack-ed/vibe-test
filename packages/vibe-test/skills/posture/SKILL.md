@@ -1,6 +1,6 @@
 ---
 name: posture
-description: "This skill should be used when the user says `/vibe-test:posture`. A read-only ambient summary — no scans, no generation, no mutations. Renders classification + weighted score vs tier target + gap counts by level + last-audit/generate timestamps in ≤40 terminal lines in <3s on minimal-spa fixture. Detects state freshness (stale audit, pending tests awaiting review, generate-able gaps) and suggests next commands inline as questions — never executes. Emits JSON sidecar for machine consumers."
+description: "Use when the user says `/vibe-test:posture` or wants a quick status read without a scan — 'where do my tests stand', 'test status', 'quick testing summary', 'what did the last audit say'. Read-only ambient summary: classification + weighted score vs tier target + gap counts + last-audit/generate timestamps, in ≤40 terminal lines in <3s. Detects state freshness (stale audit, pending tests awaiting review) and suggests next commands as questions — never executes them. No scans, no generation, no mutations; for a fresh measurement use :audit or :coverage."
 argument-hint: ""
 ---
 

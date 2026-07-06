@@ -1,6 +1,6 @@
 ---
 name: fix
-description: "This skill should be used when the user says `/vibe-test:fix`. Diagnoses broken tests and test harnesses, routes repairs by confidence (high → auto-repair with rationale; medium → stage in `.vibe-test/pending/fixes/`; low / complex → defer to `superpowers:systematic-debugging`). Detects harness-level breaks (broken runner, missing binary, cherry-picked denominator) distinctly from test-logic breaks. Rolls back auto-written generated tests to pending when they are the source of CI breakage."
+description: "Use when the user says `/vibe-test:fix` or reports broken testing — 'my tests are failing', 'the suite is broken', 'CI is red on tests', 'jest won't even run', 'vitest times out'. Diagnoses broken tests AND broken harnesses, distinctly: harness-level breaks (broken runner, missing binary, cherry-picked denominator) are detected before test-logic diagnosis. Routes repairs by confidence (high auto-repair with rationale, medium stage in `.vibe-test/pending/fixes/`, low/complex defer to `superpowers:systematic-debugging`); rolls back auto-written generated tests when they caused the CI break. Not for failing application code with a healthy suite — that's a debugging task, not a test-repair task."
 argument-hint: "[--path <glob>]"
 ---
 
