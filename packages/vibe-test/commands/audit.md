@@ -3,6 +3,8 @@ description: "Audit — inventory + classify + score. Scans the repo, picks app 
 argument-hint: "[--path <glob>] [--verbose | --terse]"
 ---
 
+**Load the full instructions first:** read `${CLAUDE_PLUGIN_ROOT}/skills/audit/SKILL.md` in full and follow it. This file is only the entry point; the skill is the complete instruction set, and this command shadows it, so it will not load on its own.
+
 Use the **audit** skill to handle `/vibe-test:audit`.
 
 Read `skills/audit/SKILL.md` and follow it end to end. The audit:

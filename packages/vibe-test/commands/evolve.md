@@ -3,6 +3,8 @@ description: "Evolve — reflective Level-3 loop for Vibe Test itself. Reads the
 argument-hint: "(no args — reads from ~/.claude/plugins/data/vibe-test/)"
 ---
 
+**Load the full instructions first:** read `${CLAUDE_PLUGIN_ROOT}/skills/evolve/SKILL.md` in full and follow it. This file is only the entry point; the skill is the complete instruction set, and this command shadows it, so it will not load on its own.
+
 Use the **evolve** skill to handle `/vibe-test:evolve`.
 
 Read `skills/evolve/SKILL.md` and follow it end-to-end. This command is for Vibe Test's own self-improvement — it reads the Vibe Test usage logs (friction, wins, sessions) under `~/.claude/plugins/data/vibe-test/` and proposes SKILL-file edits that land in `packages/vibe-test/proposed-changes.md`. Nothing auto-applies.
