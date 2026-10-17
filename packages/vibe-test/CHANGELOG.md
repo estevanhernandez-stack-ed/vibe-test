@@ -4,6 +4,17 @@ All notable changes to `@esthernandez/vibe-test` will be documented in this file
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.1] — 2026-10-16
+
+### Fixed
+
+- **Commands now load their skills.** A plugin command shadows the skill with the same name, so the slash command loaded only the short command wrapper and the full skill instructions never loaded. Each wrapper now points the agent at its `SKILL.md`.
+- **npm package version back in lockstep.** `@esthernandez/vibe-test` moves from 0.3.0 to 0.4.1 to match the plugin.
+
+### Added
+
+- **Static plugin check in CI** (`scripts/check-plugin.js`). Fails on SKILL or command frontmatter that would load with empty metadata, and on a command wrapper that doesn't point at its skill.
+
 ## [0.3.0] — 2026-06-09 · The tool learns its own product type (GAP-20 + GAP-13 Tier 1)
 
 From the quality-net gap analysis (vibe-plugins `docs/quality-net-gap-analysis-2026-06-09.md`): the family's own test tool could not name the family's own app type — a shipped stable-channel plugin classified as "static site" and was gate-passable on one smoke test, and a .NET repo silently no-op'd into a zero-source "static" that read as coverage.
