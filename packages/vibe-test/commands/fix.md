@@ -3,6 +3,8 @@ description: "Fix — diagnose broken tests and harnesses, route repairs by conf
 argument-hint: "[--path <glob>]"
 ---
 
+**Load the full instructions first:** read `${CLAUDE_PLUGIN_ROOT}/skills/fix/SKILL.md` in full and follow it. This file is only the entry point; the skill is the complete instruction set, and this command shadows it, so it will not load on its own.
+
 Use the **fix** skill to handle `/vibe-test:fix`.
 
 Read `skills/fix/SKILL.md` and follow it end to end. The fix command:

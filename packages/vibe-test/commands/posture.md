@@ -3,6 +3,8 @@ description: "Posture — read-only ambient summary. No scans, no generation, no
 argument-hint: ""
 ---
 
+**Load the full instructions first:** read `${CLAUDE_PLUGIN_ROOT}/skills/posture/SKILL.md` in full and follow it. This file is only the entry point; the skill is the complete instruction set, and this command shadows it, so it will not load on its own.
+
 Use the **posture** skill to handle `/vibe-test:posture`.
 
 Read `skills/posture/SKILL.md` and follow it end to end. The posture command:
